@@ -2,6 +2,8 @@ package com.emlakjet.purchaseinvoiceservice.service.impl;
 
 import com.emlakjet.purchaseinvoiceservice.dto.request.ProductRequest;
 import com.emlakjet.purchaseinvoiceservice.dto.response.ProductResponse;
+import com.emlakjet.purchaseinvoiceservice.exception.ProductAlreadyExistsException;
+import com.emlakjet.purchaseinvoiceservice.exception.ProductNotFoundException;
 import com.emlakjet.purchaseinvoiceservice.mapper.ProductMapper;
 import com.emlakjet.purchaseinvoiceservice.model.entity.Product;
 import com.emlakjet.purchaseinvoiceservice.repository.ProductRepository;
@@ -22,6 +24,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse createProduct(ProductRequest request) {
+        if (productRepository.existsByName(request.name())) {
+            throw new ProductAlreadyExistsException(request.name());
+        }
+
         Product product = productMapper.toEntity(request);
         return productMapper.toResponse(productRepository.save(product));
     }
@@ -31,13 +37,12 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse getProductById(Long id) {
         return productRepository.findById(id)
                 .map(productMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ProductResponse> getAllProducts() {
-
         return productRepository.findAll()
                 .stream()
                 .map(productMapper::toResponse)
@@ -47,7 +52,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse updateProduct(Long id, ProductRequest request) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ProductNotFoundException(id));
+
+        if (!product.getName().equals(request.name())
+                && productRepository.existsByName(request.name())) {
+            throw new ProductAlreadyExistsException(request.name());
+        }
 
         product.setName(request.name());
         product.setDescription(request.description());
@@ -61,16 +71,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
-            throw new RuntimeException("Product not found with id: " + id);
+            throw new ProductNotFoundException(id);
         }
 
         productRepository.deleteById(id);
     }
 
-    @Override
-    public void validateProductExists(String productName) {
-        if (!productRepository.existsByName(productName)) {
-            throw new RuntimeException("Product not found: " + productName);
-        }
-    }
 }

@@ -1,4 +1,6 @@
 package com.emlakjet.purchaseinvoiceservice.dto.response;
 
-public class AuthResponse {
+public record AuthResponse(
+        String token
+) {
 }

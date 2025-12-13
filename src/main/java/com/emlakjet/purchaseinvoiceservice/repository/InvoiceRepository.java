@@ -22,6 +22,9 @@ public interface InvoiceRepository extends JpaRepository<Invoice, String> {
 
     List<Invoice> findByStatus(InvoiceStatus status);
 
+    boolean existsByBillNo(String billNo);
+
+
     @Query("""
             SELECT i FROM Invoice i
             WHERE (:status IS NULL OR i.status = :status)

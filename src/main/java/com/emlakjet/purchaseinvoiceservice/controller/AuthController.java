@@ -1,37 +1,33 @@
 package com.emlakjet.purchaseinvoiceservice.controller;
 
+import com.emlakjet.purchaseinvoiceservice.dto.request.AuthRequest;
+import com.emlakjet.purchaseinvoiceservice.dto.request.RegisterRequest;
 import com.emlakjet.purchaseinvoiceservice.dto.response.ApiResponse;
-import com.emlakjet.purchaseinvoiceservice.util.JwtUtil;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import com.emlakjet.purchaseinvoiceservice.dto.response.AuthResponse;
+import com.emlakjet.purchaseinvoiceservice.service.AuthService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
+    private final AuthService authService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
+    @PostMapping("/register")
+    public ApiResponse<Void> register(@RequestBody @Valid RegisterRequest request) {
+        authService.register(request);
+        return ApiResponse.success("User registered successfully", null);
     }
 
     @PostMapping("/login")
-    public ApiResponse<String> login(@RequestParam String email,
-                                     @RequestParam String password) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
-        );
-
-        String token = jwtUtil.generateToken(authentication.getName());
-
-        return ApiResponse.success("Login successful", token);
+    public ApiResponse<AuthResponse> login(@RequestBody @Valid AuthRequest request) {
+        return ApiResponse.success("Login successful", authService.login(request));
     }
 
 }
