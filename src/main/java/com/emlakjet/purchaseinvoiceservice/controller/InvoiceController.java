@@ -64,9 +64,9 @@ public class InvoiceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<InvoiceResponse>> update(
-            @PathVariable Long id,
-            @RequestBody InvoiceRequest invoiceRequest
+    public ResponseEntity<ApiResponse<InvoiceResponse>> update(@Valid
+                                                               @PathVariable Long id,
+                                                               @RequestBody InvoiceRequest invoiceRequest
     ) {
         InvoiceResponse invoiceResponse = invoiceService.updateInvoice(id, invoiceRequest);
 

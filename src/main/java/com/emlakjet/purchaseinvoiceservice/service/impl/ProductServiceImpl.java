@@ -49,6 +49,9 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
+        product.setName(request.name());
+        product.setDescription(request.description());
+        product.setPrice(request.price());
 
         Product updatedProduct = productRepository.save(product);
 

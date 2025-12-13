@@ -4,6 +4,7 @@ import com.emlakjet.purchaseinvoiceservice.dto.request.ProductRequest;
 import com.emlakjet.purchaseinvoiceservice.dto.response.ApiResponse;
 import com.emlakjet.purchaseinvoiceservice.dto.response.ProductResponse;
 import com.emlakjet.purchaseinvoiceservice.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ProductResponse>> createProduct(@RequestBody ProductRequest productRequest) {
+    public ResponseEntity<ApiResponse<ProductResponse>> createProduct(@Valid @RequestBody ProductRequest productRequest) {
         ProductResponse productResponse = productService.createProduct(productRequest);
         return ResponseEntity.ok(ApiResponse.success("Product created", productResponse));
     }
@@ -35,7 +36,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(@PathVariable Long id,
+    public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(@Valid @PathVariable Long id,
                                                                       @RequestBody ProductRequest productRequest) {
         ProductResponse productResponse = productService.updateProduct(id, productRequest);
         return ResponseEntity.ok(ApiResponse.success("Product updated", productResponse));
