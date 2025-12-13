@@ -1,0 +1,3 @@
+invoice:
+  approval:
+    max-limit: 200
