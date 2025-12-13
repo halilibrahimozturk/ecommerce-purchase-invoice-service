@@ -1,6 +1,5 @@
-package com.emlakjet.purchaseinvoiceservice.model;
+package com.emlakjet.purchaseinvoiceservice.model.entity;
 
-import com.emlakjet.purchaseinvoiceservice.model.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "purchasingSpecialists")
+@Table(name = "purchasingSpecialists", uniqueConstraints = {@UniqueConstraint(columnNames = {"firstName", "lastName", "email"})})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +20,8 @@ public class PurchasingSpecialist extends BaseEntity {
 
     private String firstName;
     private String lastName;
+
+    @Column(nullable = false, unique = true)
     private String email;
 
 }

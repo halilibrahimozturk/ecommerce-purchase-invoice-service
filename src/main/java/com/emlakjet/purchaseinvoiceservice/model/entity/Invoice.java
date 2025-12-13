@@ -1,7 +1,6 @@
 package com.emlakjet.purchaseinvoiceservice.model.entity;
 
 import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
-import com.emlakjet.purchaseinvoiceservice.model.PurchasingSpecialist;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,12 +23,11 @@ public class Invoice extends BaseEntity {
 
     private BigDecimal amount;
     private String billNo;
-    private boolean approved;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private PurchasingSpecialist purchasingSpecialist;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
     @Enumerated(EnumType.STRING)
