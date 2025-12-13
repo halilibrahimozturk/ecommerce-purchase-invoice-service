@@ -4,6 +4,7 @@ import com.emlakjet.purchaseinvoiceservice.dto.request.InvoiceRequest;
 import com.emlakjet.purchaseinvoiceservice.dto.response.InvoiceResponse;
 import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface InvoiceService {
@@ -19,4 +20,6 @@ public interface InvoiceService {
     InvoiceResponse updateInvoice(Long id, InvoiceRequest invoiceRequest);
 
     void deleteInvoice(Long id);
+
+    BigDecimal getTotalApprovedAmountByPurchaser(String email);
 }

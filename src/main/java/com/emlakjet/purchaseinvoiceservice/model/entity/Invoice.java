@@ -21,14 +21,17 @@ public class Invoice extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private BigDecimal amount;
-    private String billNo;
-
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "purchasing_specialist_id", nullable = false)
     private PurchasingSpecialist purchasingSpecialist;
 
+    private BigDecimal amount;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    private String billNo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

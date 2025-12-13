@@ -22,24 +22,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse createProduct(ProductRequest request) {
-
-        Product product = new Product();
-        product.setName(request.name());
-        product.setPrice(request.price());
-
-        Product savedProduct = productRepository.save(product);
-
-        return productMapper.toResponse(savedProduct);
+        Product product = productMapper.toEntity(request);
+        return productMapper.toResponse(productRepository.save(product));
     }
 
     @Override
     @Transactional(readOnly = true)
     public ProductResponse getProductById(Long id) {
-
-        Product product = productRepository.findById(id)
+        return productRepository.findById(id)
+                .map(productMapper::toResponse)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
-
-        return productMapper.toResponse(product);
     }
 
     @Override
@@ -54,17 +46,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse updateProduct(Long id, ProductRequest request) {
-
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
-        if (request.name() != null) {
-            product.setName(request.name());
-        }
-
-        if (request.price() != null) {
-            product.setPrice(request.price());
-        }
 
         Product updatedProduct = productRepository.save(product);
 
@@ -73,11 +57,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Long id) {
-
         if (!productRepository.existsById(id)) {
             throw new RuntimeException("Product not found with id: " + id);
         }
 
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public void validateProductExists(String productName) {
+        if (!productRepository.existsByName(productName)) {
+            throw new RuntimeException("Product not found: " + productName);
+        }
     }
 }

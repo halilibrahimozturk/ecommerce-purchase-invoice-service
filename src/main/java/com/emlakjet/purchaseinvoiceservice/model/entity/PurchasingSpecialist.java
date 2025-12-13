@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "purchasingSpecialists", uniqueConstraints = {@UniqueConstraint(columnNames = {"firstName", "lastName", "email"})})
 @Data
@@ -24,4 +26,10 @@ public class PurchasingSpecialist extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
+//    @OneToMany(
+//            mappedBy = "user",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true
+//    )
+//    private List<Invoice> invoices;
 }

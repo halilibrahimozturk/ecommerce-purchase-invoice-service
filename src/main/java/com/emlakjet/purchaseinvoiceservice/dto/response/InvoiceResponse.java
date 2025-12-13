@@ -12,8 +12,6 @@ public record InvoiceResponse(
         BigDecimal amount,
         String productName,
         String billNo,
-        InvoiceStatus status,
-        String message
-
+        InvoiceStatus status
 ) {
 }
