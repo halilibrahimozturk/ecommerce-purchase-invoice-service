@@ -6,9 +6,14 @@ import java.math.BigDecimal;
 
 public record InvoiceResponse(
         String id,
-        InvoiceStatus status,
-        String message,
+        String firstName,
+        String lastName,
+        String email,
         BigDecimal amount,
-        String billNo
+        String productName,
+        String billNo,
+        InvoiceStatus status,
+        String message
+
 ) {
 }

@@ -23,10 +23,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<String> login(@RequestParam String username,
+    public ApiResponse<String> login(@RequestParam String email,
                                      @RequestParam String password) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
+                new UsernamePasswordAuthenticationToken(email, password)
         );
 
         String token = jwtUtil.generateToken(authentication.getName());

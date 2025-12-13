@@ -11,6 +11,9 @@ public record ProductRequest(
         @NotBlank
         String name,
 
+        @NotBlank
+        String description,
+
         @NotNull
         @Positive
         BigDecimal price
