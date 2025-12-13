@@ -1,5 +1,7 @@
 package com.emlakjet.purchaseinvoiceservice.config;
 
+import com.emlakjet.purchaseinvoiceservice.exception.CustomAccessDeniedHandler;
+import com.emlakjet.purchaseinvoiceservice.exception.CustomAuthenticationEntryPoint;
 import com.emlakjet.purchaseinvoiceservice.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -61,6 +63,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                        .accessDeniedHandler(new CustomAccessDeniedHandler())
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
