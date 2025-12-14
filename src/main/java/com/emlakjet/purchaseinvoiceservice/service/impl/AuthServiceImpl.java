@@ -3,9 +3,8 @@ package com.emlakjet.purchaseinvoiceservice.service.impl;
 import com.emlakjet.purchaseinvoiceservice.dto.request.AuthRequest;
 import com.emlakjet.purchaseinvoiceservice.dto.request.RegisterRequest;
 import com.emlakjet.purchaseinvoiceservice.dto.response.AuthResponse;
-import com.emlakjet.purchaseinvoiceservice.model.UserRole;
-import com.emlakjet.purchaseinvoiceservice.model.entity.PurchasingSpecialist;
-import com.emlakjet.purchaseinvoiceservice.repository.PurchasingSpecialistRepository;
+import com.emlakjet.purchaseinvoiceservice.model.entity.User;
+import com.emlakjet.purchaseinvoiceservice.repository.UserRepository;
 import com.emlakjet.purchaseinvoiceservice.service.AuthService;
 import com.emlakjet.purchaseinvoiceservice.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final PurchasingSpecialistRepository repository;
+    private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
@@ -31,12 +30,12 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Email already exists");
         }
 
-        PurchasingSpecialist user = PurchasingSpecialist.builder()
+        User user = User.builder()
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
-                .role(UserRole.PURCHASING_SPECIALIST)
+                .role(request.role())
                 .build();
 
         repository.save(user);
@@ -52,7 +51,10 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
 
-        String token = jwtUtil.generateToken(authentication.getName());
+        User user = repository.findByEmail(request.email())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String token = jwtUtil.generateToken(authentication.getName(), user.getRole().name());
 
         return new AuthResponse(token);
     }

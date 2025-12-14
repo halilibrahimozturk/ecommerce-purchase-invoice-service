@@ -23,7 +23,7 @@ public class Invoice extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchasing_specialist_id", nullable = false)
-    private PurchasingSpecialist purchasingSpecialist;
+    private User purchasingSpecialist;
 
     private BigDecimal amount;
 

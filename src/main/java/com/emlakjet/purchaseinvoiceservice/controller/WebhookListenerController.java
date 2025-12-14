@@ -1,6 +1,7 @@
 package com.emlakjet.purchaseinvoiceservice.controller;
 
 import com.emlakjet.purchaseinvoiceservice.dto.response.InvoiceResponse;
+import com.emlakjet.purchaseinvoiceservice.model.entity.Notification;
 import com.emlakjet.purchaseinvoiceservice.service.InvoiceService;
 import com.emlakjet.purchaseinvoiceservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 @RestController
@@ -31,12 +33,19 @@ public class WebhookListenerController {
         try {
             log.info("Webhook payload received: {}", payload);
 
-            String invoiceId = String.valueOf(payload.get("invoiceId"));
-            String message = String.valueOf(payload.get("message"));
+            Notification notification = Notification.builder()
+                    .invoiceId(String.valueOf(payload.get("invoiceId")))
+                    .firstName(String.valueOf(payload.get("firstName")))
+                    .lastName(String.valueOf(payload.get("lastName")))
+                    .email(String.valueOf(payload.get("email")))
+                    .amount(new BigDecimal(payload.get("amount").toString()))
+                    .productName(String.valueOf(payload.get("productName")))
+                    .billNo(String.valueOf(payload.get("billNo")))
+                    .message(String.valueOf(payload.get("message")))
+                    .build();
 
-            InvoiceResponse invoiceResponse = invoiceService.getInvoiceById(invoiceId);
 
-            notificationService.saveNotification(invoiceResponse, message);
+            notificationService.saveNotification(notification);
 
             return ResponseEntity.ok("Received");
         } catch (Exception e) {

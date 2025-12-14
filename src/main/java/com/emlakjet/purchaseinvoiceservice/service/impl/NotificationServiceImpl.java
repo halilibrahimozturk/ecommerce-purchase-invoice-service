@@ -1,7 +1,6 @@
 package com.emlakjet.purchaseinvoiceservice.service.impl;
 
 import com.emlakjet.purchaseinvoiceservice.config.SecurityProperties;
-import com.emlakjet.purchaseinvoiceservice.dto.response.InvoiceResponse;
 import com.emlakjet.purchaseinvoiceservice.dto.response.NotificationResponse;
 import com.emlakjet.purchaseinvoiceservice.model.entity.Invoice;
 import com.emlakjet.purchaseinvoiceservice.model.entity.Notification;
@@ -77,18 +76,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
 
-    public void saveNotification(InvoiceResponse invoiceResponse, String message) {
-        Notification notification = Notification.builder()
-                .invoiceId(invoiceResponse.id())
-                .firstName(invoiceResponse.firstName())
-                .lastName(invoiceResponse.lastName())
-                .email(invoiceResponse.email())
-                .amount(invoiceResponse.amount())
-                .productName(invoiceResponse.productName())
-                .billNo(invoiceResponse.billNo())
-                .message(message)
-                .build();
-
+    public void saveNotification(Notification notification) {
         notificationRepository.save(notification);
         log.info("Notification saved: {}", notification);
     }

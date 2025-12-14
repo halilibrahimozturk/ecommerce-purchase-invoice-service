@@ -2,6 +2,7 @@ package com.emlakjet.purchaseinvoiceservice.config;
 
 import com.emlakjet.purchaseinvoiceservice.exception.CustomAccessDeniedHandler;
 import com.emlakjet.purchaseinvoiceservice.exception.CustomAuthenticationEntryPoint;
+import com.emlakjet.purchaseinvoiceservice.model.UserRole;
 import com.emlakjet.purchaseinvoiceservice.security.JwtAuthFilter;
 import com.emlakjet.purchaseinvoiceservice.service.impl.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/swagger-ui/**", "/mock-webhook/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/notifications/**", "/mock-webhook/**").hasRole(UserRole.FINANCE_SPECIALIST.name())
+                        .requestMatchers("/api/invoices/**", "/api/products/**").hasRole(UserRole.PURCHASING_SPECIALIST.name())
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

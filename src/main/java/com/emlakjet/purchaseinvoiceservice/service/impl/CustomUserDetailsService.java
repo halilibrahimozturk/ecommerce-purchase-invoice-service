@@ -1,7 +1,7 @@
 package com.emlakjet.purchaseinvoiceservice.service.impl;
 
-import com.emlakjet.purchaseinvoiceservice.model.entity.PurchasingSpecialist;
-import com.emlakjet.purchaseinvoiceservice.repository.PurchasingSpecialistRepository;
+import com.emlakjet.purchaseinvoiceservice.model.entity.User;
+import com.emlakjet.purchaseinvoiceservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,12 +15,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final PurchasingSpecialistRepository repository;
+    private final UserRepository repository;
 
     @Override
     public UserDetails loadUserByUsername(String email) {
 
-        PurchasingSpecialist user = repository.findByEmail(email)
+        User user = repository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return new org.springframework.security.core.userdetails.User(

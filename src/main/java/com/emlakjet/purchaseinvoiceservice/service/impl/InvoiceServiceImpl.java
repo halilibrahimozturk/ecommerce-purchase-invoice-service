@@ -10,10 +10,10 @@ import com.emlakjet.purchaseinvoiceservice.mapper.InvoiceMapper;
 import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
 import com.emlakjet.purchaseinvoiceservice.model.entity.Invoice;
 import com.emlakjet.purchaseinvoiceservice.model.entity.Product;
-import com.emlakjet.purchaseinvoiceservice.model.entity.PurchasingSpecialist;
+import com.emlakjet.purchaseinvoiceservice.model.entity.User;
 import com.emlakjet.purchaseinvoiceservice.repository.InvoiceRepository;
 import com.emlakjet.purchaseinvoiceservice.repository.ProductRepository;
-import com.emlakjet.purchaseinvoiceservice.repository.PurchasingSpecialistRepository;
+import com.emlakjet.purchaseinvoiceservice.repository.UserRepository;
 import com.emlakjet.purchaseinvoiceservice.service.InvoiceService;
 import com.emlakjet.purchaseinvoiceservice.service.NotificationService;
 import com.emlakjet.purchaseinvoiceservice.util.SecurityUtil;
@@ -34,7 +34,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final ProductRepository productRepository;
     private final InvoiceMapper invoiceMapper;
     private final NotificationService notificationService;
-    private final PurchasingSpecialistRepository specialistRepository;
+    private final UserRepository specialistRepository;
     private final InvoiceApprovalProperties approvalProperties;
 
 
@@ -42,8 +42,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     public InvoiceResponse createInvoice(InvoiceRequest invoiceRequest) {
         String loggedEmail = SecurityUtil.getCurrentUserEmail();
 
-        PurchasingSpecialist user =
-                specialistRepository.findByEmail(loggedEmail)
+        User user = specialistRepository.findByEmail(loggedEmail)
                         .orElseThrow(() -> new RuntimeException("User not found"));
 
         validateInvoiceOwner(invoiceRequest, user);
@@ -131,7 +130,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     }
 
-    private void validateInvoiceOwner(InvoiceRequest request, PurchasingSpecialist user) {
+    private void validateInvoiceOwner(InvoiceRequest request, User user) {
 
         if (!request.email().equals(user.getEmail())
                 || !request.firstName().equals(user.getFirstName())
