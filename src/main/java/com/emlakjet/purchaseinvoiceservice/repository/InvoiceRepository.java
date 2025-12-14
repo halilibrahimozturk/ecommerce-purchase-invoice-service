@@ -11,7 +11,6 @@ import java.util.List;
 
 public interface InvoiceRepository extends JpaRepository<Invoice, String> {
 
-
     @Query("""
            SELECT COALESCE(SUM(i.amount), 0)
            FROM Invoice i
@@ -22,15 +21,8 @@ public interface InvoiceRepository extends JpaRepository<Invoice, String> {
 
     List<Invoice> findByStatus(InvoiceStatus status);
 
+    List<Invoice> findByStatusAndEmail(InvoiceStatus status, String email);
+
     boolean existsByBillNo(String billNo);
 
-
-    @Query("""
-            SELECT i FROM Invoice i
-            WHERE (:status IS NULL OR i.status = :status)
-            AND (:email IS NULL OR i.purchasingSpecialist.email = :email)
-            AND (:firstName IS NULL OR i.purchasingSpecialist.firstName = :firstName)
-            AND (:lastName IS NULL OR i.purchasingSpecialist.lastName = :lastName)
-            """)
-    List<Invoice> findAllWithFilters(String status, String email, String firstName, String lastName);
 }

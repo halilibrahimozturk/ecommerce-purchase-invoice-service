@@ -9,14 +9,17 @@ import com.emlakjet.purchaseinvoiceservice.exception.ProductNotFoundException;
 import com.emlakjet.purchaseinvoiceservice.mapper.InvoiceMapper;
 import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
 import com.emlakjet.purchaseinvoiceservice.model.entity.Invoice;
-import com.emlakjet.purchaseinvoiceservice.model.entity.Product;
+import com.emlakjet.purchaseinvoiceservice.model.entity.PurchasingSpecialist;
 import com.emlakjet.purchaseinvoiceservice.repository.InvoiceRepository;
 import com.emlakjet.purchaseinvoiceservice.repository.ProductRepository;
+import com.emlakjet.purchaseinvoiceservice.repository.PurchasingSpecialistRepository;
 import com.emlakjet.purchaseinvoiceservice.service.InvoiceService;
 import com.emlakjet.purchaseinvoiceservice.service.NotificationService;
 import com.emlakjet.purchaseinvoiceservice.service.ProductService;
 import com.emlakjet.purchaseinvoiceservice.service.rule.InvoiceApprovalRuleEngine;
+import com.emlakjet.purchaseinvoiceservice.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,19 +37,26 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceApprovalRuleEngine invoiceApprovalRuleEngine;
     private final ProductService productService;
     private final NotificationService notificationService;
-
+    private final PurchasingSpecialistRepository specialistRepository;
     private final InvoiceApprovalProperties approvalProperties;
 
 
     @Override
     public InvoiceResponse createInvoice(InvoiceRequest invoiceRequest) {
+        String loggedEmail = SecurityUtil.getCurrentUserEmail();
 
-        Product product = productRepository.findByName(invoiceRequest.productName())
-                .orElseThrow(() -> new ProductNotFoundException(invoiceRequest.productName()));
+        PurchasingSpecialist user =
+                specialistRepository.findByEmail(loggedEmail)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+
+        validateInvoiceOwner(invoiceRequest, user);
 
         if (invoiceRepository.existsByBillNo(invoiceRequest.billNo())) {
             throw new DuplicateBillNoException(invoiceRequest.productName());
         }
+
+        productRepository.findByName(invoiceRequest.productName())
+                .orElseThrow(() -> new ProductNotFoundException(invoiceRequest.productName()));
 
         BigDecimal currentTotal = invoiceRepository.sumApprovedAmountByEmail(invoiceRequest.email());
 
@@ -81,8 +91,9 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public List<InvoiceResponse> listInvoices(String status, String email, String firstName, String lastName) {
-        return invoiceRepository.findAllWithFilters(status, email, firstName, lastName)
+    public List<InvoiceResponse> listInvoices(InvoiceStatus status) {
+        String email = SecurityUtil.getCurrentUserEmail();
+        return invoiceRepository.findByStatusAndEmail(status, email)
                 .stream()
                 .map(invoiceMapper::toResponse)
                 .toList();
@@ -97,44 +108,33 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public InvoiceResponse updateInvoice(Long id, InvoiceRequest invoiceRequest) {
-
+    public void cancelInvoice(Long id) {
         Invoice invoice = invoiceRepository.findById(String.valueOf(id))
                 .orElseThrow(() -> new InvoiceNotFoundException(id));
 
-        BigDecimal totalAmount =
-                invoiceRepository.sumApprovedAmountByEmail(invoice.getPurchasingSpecialist().getEmail())
-                        .subtract(invoice.getAmount());
+        String currentUserEmail = SecurityUtil.getCurrentUserEmail();
 
-        BigDecimal newTotal = totalAmount.add(invoiceRequest.amount());
-
-
-        invoice.setBillNo(invoiceRequest.billNo());
-        invoice.setAmount(invoiceRequest.amount());
-
-        if (!isAmountApproved(newTotal)) {
-            invoice.setStatus(InvoiceStatus.REJECTED);
-            Invoice saved = invoiceRepository.save(invoice);
-            notificationService.notifyRejectedInvoice(invoice);
-            return invoiceMapper.toResponse(saved);
+        if (!invoice.getPurchasingSpecialist().getEmail().equals(currentUserEmail)) {
+            throw new AccessDeniedException("You can only cancel your own invoices");
         }
 
-        invoice.setStatus(InvoiceStatus.APPROVED);
-        Invoice updated = invoiceRepository.save(invoice);
-        return invoiceMapper.toResponse(updated);
+        if (invoice.getStatus() == InvoiceStatus.APPROVED) {
+            throw new IllegalStateException("Approved invoices cannot be cancelled");
+        }
+
+        invoice.setStatus(InvoiceStatus.CANCELLED);
+        invoiceRepository.save(invoice);
     }
 
+    private void validateInvoiceOwner(InvoiceRequest request, PurchasingSpecialist user) {
 
-    @Override
-    public void deleteInvoice(Long id) {
-        Invoice invoice = invoiceRepository.findById(String.valueOf(id))
-                .orElseThrow(() -> new InvoiceNotFoundException(id));
+        if (!request.email().equals(user.getEmail())
+                || !request.firstName().equals(user.getFirstName())
+                || !request.lastName().equals(user.getLastName())) {
 
-        invoiceRepository.delete(invoice);
-    }
-
-    @Override
-    public BigDecimal getTotalApprovedAmountByPurchaser(String email) {
-        return invoiceRepository.sumApprovedAmountByEmail(email);
+            throw new AccessDeniedException(
+                    "Invoice can only be created with your own identity information"
+            );
+        }
     }
 }

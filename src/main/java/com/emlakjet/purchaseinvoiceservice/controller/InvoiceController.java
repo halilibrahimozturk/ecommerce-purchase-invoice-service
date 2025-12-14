@@ -5,6 +5,7 @@ import com.emlakjet.purchaseinvoiceservice.dto.response.ApiResponse;
 import com.emlakjet.purchaseinvoiceservice.dto.response.InvoiceResponse;
 import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
 import com.emlakjet.purchaseinvoiceservice.service.InvoiceService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,20 +37,6 @@ public class InvoiceController {
         return ResponseEntity.ok(ApiResponse.success("Invoice: ", invoiceResponse));
     }
 
-    /**
-     * LIST ALL INVOICES (with filters)
-     */
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<InvoiceResponse>>> listInvoices(
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String firstName,
-            @RequestParam(required = false) String lastName) {
-
-        List<InvoiceResponse> invoices = invoiceService.listInvoices(status, email, firstName, lastName);
-        return ResponseEntity.ok(ApiResponse.success("Invoices: ", invoices));
-    }
-
     @GetMapping("/approved")
     public ResponseEntity<ApiResponse<List<InvoiceResponse>>> getApprovedInvoices() {
         List<InvoiceResponse> list = invoiceService.getInvoicesByStatus(InvoiceStatus.APPROVED);
@@ -63,23 +50,17 @@ public class InvoiceController {
         return ResponseEntity.ok(ApiResponse.success("Rejected invoices", list));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<InvoiceResponse>> update(@Valid
-                                                               @PathVariable Long id,
-                                                               @RequestBody InvoiceRequest invoiceRequest
-    ) {
-        InvoiceResponse invoiceResponse = invoiceService.updateInvoice(id, invoiceRequest);
-
-        if (invoiceResponse.status() == InvoiceStatus.APPROVED) {
-            return ResponseEntity.ok(ApiResponse.success("Invoice updated", invoiceResponse));
-        } else {
-            return ResponseEntity.status(422).body(ApiResponse.error("Invoice not updated: limit exceeded"));
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInvoice(@PathVariable Long id) {
-        invoiceService.deleteInvoice(id);
-        return ResponseEntity.noContent().build();
+    @Operation(
+            summary = "Cancel invoice",
+            description = """
+    Cancels an invoice.
+    - Only the owner can cancel
+    - Approved invoices cannot be cancelled
+    """
+    )
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<ApiResponse<Void>> cancelInvoice(@PathVariable Long id) {
+        invoiceService.cancelInvoice(id);
+        return ResponseEntity.ok(ApiResponse.success("Invoice cancelled", null));
     }
 }
