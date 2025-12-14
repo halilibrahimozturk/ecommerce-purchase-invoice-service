@@ -9,6 +9,9 @@ import com.emlakjet.purchaseinvoiceservice.model.entity.Product;
 import com.emlakjet.purchaseinvoiceservice.repository.ProductRepository;
 import com.emlakjet.purchaseinvoiceservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
 
     @Override
+    @CacheEvict(value = "products", allEntries = true)
     public ProductResponse createProduct(ProductRequest request) {
         if (productRepository.existsByName(request.name())) {
             throw new ProductAlreadyExistsException(request.name());
@@ -34,6 +38,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "productsById", key = "#id")
     public ProductResponse getProductById(Long id) {
         return productRepository.findById(id)
                 .map(productMapper::toResponse)
@@ -42,6 +47,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable("products")
     public List<ProductResponse> getAllProducts() {
         return productRepository.findAll()
                 .stream()
@@ -50,6 +56,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @CachePut(value = "productsById", key = "#id")
+    @CacheEvict(value = "products", allEntries = true)
     public ProductResponse updateProduct(Long id, ProductRequest request) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
@@ -69,6 +77,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @CacheEvict(value = {"products", "productsById"}, allEntries = true)
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
             throw new ProductNotFoundException(id);

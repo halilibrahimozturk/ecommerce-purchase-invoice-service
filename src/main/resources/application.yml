@@ -6,3 +6,14 @@ security:
   webhook-urls:
     - http://localhost:8080/mock-webhook
 #    - http://localhost:8080/financeDepartment
+
+spring:
+  cache:
+    type: caffeine
+
+caffeine:
+  spec: maximumSize=1000,expireAfterWrite=30m
+
+logging:
+  level:
+    org.springframework.cache: DEBUG
