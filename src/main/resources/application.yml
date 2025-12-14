@@ -1,3 +1,8 @@
 invoice:
   approval:
     max-limit: 200
+
+security:
+  webhook-urls:
+    - http://localhost:8080/mock-webhook
+#    - http://localhost:8080/financeDepartment

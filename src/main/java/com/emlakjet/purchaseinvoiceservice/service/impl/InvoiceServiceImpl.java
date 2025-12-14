@@ -67,7 +67,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
             invoice.setStatus(InvoiceStatus.REJECTED);
             Invoice saved = invoiceRepository.save(invoice);
-            notificationService.notifyRejectedInvoice(invoice);
+            notificationService.notifyInvoiceRejected(invoice);
 
             return invoiceMapper.toResponse(saved);
         }
@@ -127,6 +127,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         invoice.setStatus(InvoiceStatus.CANCELLED);
         invoiceRepository.save(invoice);
+        notificationService.notifyInvoiceCancelled(invoice);
+
     }
 
     private void validateInvoiceOwner(InvoiceRequest request, PurchasingSpecialist user) {

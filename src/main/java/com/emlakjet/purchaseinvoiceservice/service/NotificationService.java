@@ -4,5 +4,8 @@ import com.emlakjet.purchaseinvoiceservice.model.entity.Invoice;
 
 public interface NotificationService {
 
-    void notifyRejectedInvoice(Invoice invoice);
+    void notifyInvoiceRejected(Invoice invoice);
+
+    void notifyInvoiceCancelled(Invoice invoice);
+
 }
