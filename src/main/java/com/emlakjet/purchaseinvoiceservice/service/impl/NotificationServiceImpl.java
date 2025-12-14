@@ -1,7 +1,11 @@
 package com.emlakjet.purchaseinvoiceservice.service.impl;
 
 import com.emlakjet.purchaseinvoiceservice.config.SecurityProperties;
+import com.emlakjet.purchaseinvoiceservice.dto.response.InvoiceResponse;
+import com.emlakjet.purchaseinvoiceservice.dto.response.NotificationResponse;
 import com.emlakjet.purchaseinvoiceservice.model.entity.Invoice;
+import com.emlakjet.purchaseinvoiceservice.model.entity.Notification;
+import com.emlakjet.purchaseinvoiceservice.repository.NotificationRepository;
 import com.emlakjet.purchaseinvoiceservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -20,9 +24,12 @@ public class NotificationServiceImpl implements NotificationService {
     private final RestTemplate restTemplate;
     private final List<String> webhookUrls;
 
-    public NotificationServiceImpl(RestTemplate restTemplate, SecurityProperties securityProperties) {
+    private final NotificationRepository notificationRepository;
+
+    public NotificationServiceImpl(RestTemplate restTemplate, SecurityProperties securityProperties, NotificationRepository notificationRepository) {
         this.restTemplate = restTemplate;
         this.webhookUrls = securityProperties.getWebhookUrls();
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -37,7 +44,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     public void sendNotification(Invoice invoice, String message) {
         try {
-            log.warn("SECURITY ALERT - Invoice rejected. invoiceId={}, email={}, amount={}, billNo={}",
+            log.warn("SECURITY ALERT - " + message + ". invoiceId={}, email={}, amount={}, billNo={}",
                     invoice.getId(), invoice.getPurchasingSpecialist().getEmail(), invoice.getAmount(), invoice.getBillNo());
 
             for (String url : webhookUrls) {
@@ -47,10 +54,13 @@ public class NotificationServiceImpl implements NotificationService {
 
                     Map<String, Object> payload = Map.of(
                             "invoiceId", invoice.getId(),
+                            "firstName", invoice.getPurchasingSpecialist().getFirstName(),
+                            "lastName", invoice.getPurchasingSpecialist().getLastName(),
                             "email", invoice.getPurchasingSpecialist().getEmail(),
                             "amount", invoice.getAmount(),
+                            "productName", invoice.getProduct().getName(),
                             "billNo", invoice.getBillNo(),
-                            "message", "Invoice rejected: limit exceeded"
+                            "message", message
                     );
 
                     HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
@@ -64,5 +74,40 @@ public class NotificationServiceImpl implements NotificationService {
         } catch (Exception ex) {
             log.error("SecurityNotificationService unexpected error: {}", ex.getMessage());
         }
+    }
+
+
+    public void saveNotification(InvoiceResponse invoiceResponse, String message) {
+        Notification notification = Notification.builder()
+                .invoiceId(invoiceResponse.id())
+                .firstName(invoiceResponse.firstName())
+                .lastName(invoiceResponse.lastName())
+                .email(invoiceResponse.email())
+                .amount(invoiceResponse.amount())
+                .productName(invoiceResponse.productName())
+                .billNo(invoiceResponse.billNo())
+                .message(message)
+                .build();
+
+        notificationRepository.save(notification);
+        log.info("Notification saved: {}", notification);
+    }
+
+    @Override
+    public List<NotificationResponse> getAllNotifications() {
+        return notificationRepository.findAll()
+                .stream()
+                .map(n -> new NotificationResponse(
+                        n.getInvoiceId(),
+                        n.getFirstName(),
+                        n.getLastName(),
+                        n.getEmail(),
+                        n.getAmount(),
+                        n.getProductName(),
+                        n.getBillNo(),
+                        n.getMessage(),
+                        n.getCreatedAt()
+                ))
+                .toList();
     }
 }
