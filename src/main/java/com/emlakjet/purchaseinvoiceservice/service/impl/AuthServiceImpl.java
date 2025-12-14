@@ -3,6 +3,9 @@ package com.emlakjet.purchaseinvoiceservice.service.impl;
 import com.emlakjet.purchaseinvoiceservice.dto.request.AuthRequest;
 import com.emlakjet.purchaseinvoiceservice.dto.request.RegisterRequest;
 import com.emlakjet.purchaseinvoiceservice.dto.response.AuthResponse;
+import com.emlakjet.purchaseinvoiceservice.exception.EmailAlreadyExistsException;
+import com.emlakjet.purchaseinvoiceservice.exception.InvalidCredentialsException;
+import com.emlakjet.purchaseinvoiceservice.exception.UserNotFoundException;
 import com.emlakjet.purchaseinvoiceservice.model.entity.User;
 import com.emlakjet.purchaseinvoiceservice.repository.UserRepository;
 import com.emlakjet.purchaseinvoiceservice.service.AuthService;
@@ -10,7 +13,6 @@ import com.emlakjet.purchaseinvoiceservice.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
     public void register(RegisterRequest request) {
 
         if (repository.existsByEmail(request.email())) {
-            throw new RuntimeException("Email already exists");
+            throw new EmailAlreadyExistsException(request.email());
         }
 
         User user = User.builder()
@@ -44,17 +46,21 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse login(AuthRequest request) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.email(),
-                        request.password()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.email(),
+                            request.password()
+                    )
+            );
+        } catch (Exception ex) {
+            throw new InvalidCredentialsException();
+        }
 
         User user = repository.findByEmail(request.email())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(request.email()));
 
-        String token = jwtUtil.generateToken(authentication.getName(), user.getRole().name());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
 
         return new AuthResponse(token);
     }

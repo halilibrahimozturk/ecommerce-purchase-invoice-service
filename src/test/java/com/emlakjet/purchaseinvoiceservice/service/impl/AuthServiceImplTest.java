@@ -94,7 +94,7 @@ class AuthServiceImplTest {
                 () -> authService.register(registerRequest)
         );
 
-        assertEquals("Email already exists", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Email already exists"));
         verify(userRepository, never()).save(any());
     }
 
@@ -146,8 +146,7 @@ class AuthServiceImplTest {
         RuntimeException ex = assertThrows(RuntimeException.class,
                 () -> authService.login(authRequest));
 
-        assertEquals("User not found", ex.getMessage());
+        assertTrue(ex.getMessage().contains("User not found"));
     }
-
 
 }

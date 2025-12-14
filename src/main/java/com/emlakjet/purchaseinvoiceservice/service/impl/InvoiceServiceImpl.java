@@ -3,9 +3,7 @@ package com.emlakjet.purchaseinvoiceservice.service.impl;
 import com.emlakjet.purchaseinvoiceservice.config.InvoiceApprovalProperties;
 import com.emlakjet.purchaseinvoiceservice.dto.request.InvoiceRequest;
 import com.emlakjet.purchaseinvoiceservice.dto.response.InvoiceResponse;
-import com.emlakjet.purchaseinvoiceservice.exception.DuplicateBillNoException;
-import com.emlakjet.purchaseinvoiceservice.exception.InvoiceNotFoundException;
-import com.emlakjet.purchaseinvoiceservice.exception.ProductNotFoundException;
+import com.emlakjet.purchaseinvoiceservice.exception.*;
 import com.emlakjet.purchaseinvoiceservice.mapper.InvoiceMapper;
 import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
 import com.emlakjet.purchaseinvoiceservice.model.entity.Invoice;
@@ -18,7 +16,6 @@ import com.emlakjet.purchaseinvoiceservice.service.InvoiceService;
 import com.emlakjet.purchaseinvoiceservice.service.NotificationService;
 import com.emlakjet.purchaseinvoiceservice.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +40,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         String loggedEmail = SecurityUtil.getCurrentUserEmail();
 
         User user = specialistRepository.findByEmail(loggedEmail)
-                        .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(loggedEmail));
 
         validateInvoiceOwner(invoiceRequest, user);
 
@@ -113,15 +110,19 @@ public class InvoiceServiceImpl implements InvoiceService {
         String currentUserEmail = SecurityUtil.getCurrentUserEmail();
 
         if (!invoice.getPurchasingSpecialist().getEmail().equals(currentUserEmail)) {
-            throw new AccessDeniedException("You can only cancel your own invoices");
+            throw new InvoiceOwnershipException();
         }
 
         if (invoice.getStatus() == InvoiceStatus.REJECTED) {
-            throw new IllegalStateException("Rejected invoices cannot be cancelled");
+            throw new InvoiceCannotBeCancelledException(
+                    "Rejected invoices cannot be cancelled"
+            );
         }
 
         if (invoice.getStatus() == InvoiceStatus.CANCELLED) {
-            throw new IllegalStateException("Already cancelled");
+            throw new InvoiceCannotBeCancelledException(
+                    "Invoice already cancelled"
+            );
         }
 
         invoice.setStatus(InvoiceStatus.CANCELLED);
@@ -136,9 +137,8 @@ public class InvoiceServiceImpl implements InvoiceService {
                 || !request.firstName().equals(user.getFirstName())
                 || !request.lastName().equals(user.getLastName())) {
 
-            throw new AccessDeniedException(
-                    "Invoice can only be created with your own identity information"
-            );
+            throw new InvoiceOwnershipException();
+
         }
     }
 }

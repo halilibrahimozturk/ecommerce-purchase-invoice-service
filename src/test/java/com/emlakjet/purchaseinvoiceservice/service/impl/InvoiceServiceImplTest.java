@@ -4,6 +4,8 @@ import com.emlakjet.purchaseinvoiceservice.config.InvoiceApprovalProperties;
 import com.emlakjet.purchaseinvoiceservice.dto.request.InvoiceRequest;
 import com.emlakjet.purchaseinvoiceservice.dto.response.InvoiceResponse;
 import com.emlakjet.purchaseinvoiceservice.exception.DuplicateBillNoException;
+import com.emlakjet.purchaseinvoiceservice.exception.InvoiceCannotBeCancelledException;
+import com.emlakjet.purchaseinvoiceservice.exception.InvoiceOwnershipException;
 import com.emlakjet.purchaseinvoiceservice.exception.ProductNotFoundException;
 import com.emlakjet.purchaseinvoiceservice.mapper.InvoiceMapper;
 import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
@@ -22,7 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -168,7 +169,7 @@ class InvoiceServiceImplTest {
 
             when(userRepository.findByEmail(any())).thenReturn(Optional.of(another));
 
-            assertThrows(AccessDeniedException.class,
+            assertThrows(InvoiceOwnershipException.class,
                     () -> invoiceService.createInvoice(request));
         }
     }
@@ -198,7 +199,7 @@ class InvoiceServiceImplTest {
 
             when(invoiceRepository.findById("1")).thenReturn(Optional.of(invoice));
 
-            assertThrows(AccessDeniedException.class,
+            assertThrows(InvoiceOwnershipException.class,
                     () -> invoiceService.cancelInvoice(1L));
         }
     }
@@ -214,7 +215,7 @@ class InvoiceServiceImplTest {
 
             when(invoiceRepository.findById("1")).thenReturn(Optional.of(invoice));
 
-            assertThrows(IllegalStateException.class,
+            assertThrows(InvoiceCannotBeCancelledException.class,
                     () -> invoiceService.cancelInvoice(1L));
         }
     }

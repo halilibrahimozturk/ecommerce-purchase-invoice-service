@@ -75,7 +75,6 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-
     public void saveNotification(Notification notification) {
         notificationRepository.save(notification);
         log.info("Notification saved: {}", notification);
