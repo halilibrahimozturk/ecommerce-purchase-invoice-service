@@ -15,8 +15,6 @@ import com.emlakjet.purchaseinvoiceservice.repository.ProductRepository;
 import com.emlakjet.purchaseinvoiceservice.repository.PurchasingSpecialistRepository;
 import com.emlakjet.purchaseinvoiceservice.service.InvoiceService;
 import com.emlakjet.purchaseinvoiceservice.service.NotificationService;
-import com.emlakjet.purchaseinvoiceservice.service.ProductService;
-import com.emlakjet.purchaseinvoiceservice.service.rule.InvoiceApprovalRuleEngine;
 import com.emlakjet.purchaseinvoiceservice.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,8 +32,6 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final ProductRepository productRepository;
     private final InvoiceMapper invoiceMapper;
-    private final InvoiceApprovalRuleEngine invoiceApprovalRuleEngine;
-    private final ProductService productService;
     private final NotificationService notificationService;
     private final PurchasingSpecialistRepository specialistRepository;
     private final InvoiceApprovalProperties approvalProperties;
