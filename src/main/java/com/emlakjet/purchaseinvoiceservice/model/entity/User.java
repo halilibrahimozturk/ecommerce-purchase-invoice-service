@@ -40,4 +40,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private UserRole role;
 
+    public boolean matchesIdentity(String email, String firstName, String lastName) {
+        return this.email.equals(email)
+                && this.firstName.equals(firstName)
+                && this.lastName.equals(lastName);
+    }
 }

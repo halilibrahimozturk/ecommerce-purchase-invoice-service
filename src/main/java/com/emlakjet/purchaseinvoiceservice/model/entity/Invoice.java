@@ -1,5 +1,6 @@
 package com.emlakjet.purchaseinvoiceservice.model.entity;
 
+import com.emlakjet.purchaseinvoiceservice.exception.InvoiceCannotBeCancelledException;
 import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,5 +37,33 @@ public class Invoice extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private InvoiceStatus status;
+
+    public void approve() {
+        this.status = InvoiceStatus.APPROVED;
+    }
+
+    public void reject() {
+        this.status = InvoiceStatus.REJECTED;
+    }
+
+    public void cancel() {
+        if (!isCancellable()) {
+            throw new InvoiceCannotBeCancelledException("Invalid invoice state");
+        }
+        this.status = InvoiceStatus.CANCELLED;
+    }
+
+    public boolean isCancellable() {
+        return this.status == InvoiceStatus.APPROVED;
+    }
+
+    public boolean isOwnedBy(String email) {
+        return this.purchasingSpecialist.getEmail().equals(email);
+    }
+
+    public void assignTo(User user, Product product) {
+        this.purchasingSpecialist = user;
+        this.product = product;
+    }
 
 }

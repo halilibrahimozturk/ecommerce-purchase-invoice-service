@@ -44,7 +44,6 @@ public class WebhookListenerController {
                     .message(String.valueOf(payload.get("message")))
                     .build();
 
-
             notificationService.saveNotification(notification);
 
             return ResponseEntity.ok("Received");

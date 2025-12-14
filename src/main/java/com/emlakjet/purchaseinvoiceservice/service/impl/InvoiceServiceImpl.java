@@ -29,74 +29,54 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
     private final InvoiceMapper invoiceMapper;
     private final NotificationService notificationService;
-    private final UserRepository specialistRepository;
     private final InvoiceApprovalProperties approvalProperties;
 
-
     @Override
-    public InvoiceResponse createInvoice(InvoiceRequest invoiceRequest) {
-        String loggedEmail = SecurityUtil.getCurrentUserEmail();
+    public InvoiceResponse createInvoice(InvoiceRequest request) {
 
-        User user = specialistRepository.findByEmail(loggedEmail)
-                .orElseThrow(() -> new UserNotFoundException(loggedEmail));
+        User currentUser = getCurrentUser();
+        validateOwnership(request, currentUser);
+        validateDuplicateBillNo(request.billNo());
 
-        validateInvoiceOwner(invoiceRequest, user);
+        Product product = getProduct(request.productName());
 
-        if (invoiceRepository.existsByBillNoAndStatus(invoiceRequest.billNo(), InvoiceStatus.APPROVED)) {
-            throw new DuplicateBillNoException(invoiceRequest.productName());
-        }
+        Invoice invoice = invoiceMapper.toEntity(request);
+        invoice.assignTo(currentUser, product);
 
-        Product product = productRepository.findByName(invoiceRequest.productName())
-                .orElseThrow(() -> new ProductNotFoundException(invoiceRequest.productName()));
+        BigDecimal newTotalAmount = calculateNewTotal(request.email(), request.amount());
+        decideInvoiceStatus(invoice, newTotalAmount);
 
-        BigDecimal currentTotal = invoiceRepository.sumApprovedAmountByEmail(invoiceRequest.email());
+        Invoice savedInvoice = invoiceRepository.save(invoice);
+        sendNotificationIfNeeded(savedInvoice);
 
-        BigDecimal newTotal = currentTotal.add(invoiceRequest.amount());
-
-        Invoice invoice = invoiceMapper.toEntity(invoiceRequest);
-        invoice.setPurchasingSpecialist(user);
-        invoice.setProduct(product);
-
-        if (!isAmountApproved(newTotal)) {
-
-            invoice.setStatus(InvoiceStatus.REJECTED);
-            Invoice saved = invoiceRepository.save(invoice);
-            notificationService.notifyInvoiceRejected(invoice);
-
-            return invoiceMapper.toResponse(saved);
-        }
-
-        invoice.setStatus(InvoiceStatus.APPROVED);
-
-        Invoice saved = invoiceRepository.save(invoice);
-
-        return invoiceMapper.toResponse(saved);
-    }
-
-    private boolean isAmountApproved(BigDecimal invoiceAmount) {
-        return invoiceAmount.compareTo(approvalProperties.getMaxLimit()) <= 0;
+        return invoiceMapper.toResponse(savedInvoice);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public InvoiceResponse getInvoiceById(String id) {
-        Invoice invoice = invoiceRepository.findById(id).orElseThrow(() -> new InvoiceNotFoundException(Long.valueOf(id)));
-        return invoiceMapper.toResponse(invoice);
+        return invoiceMapper.toResponse(findInvoiceById(id));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<InvoiceResponse> listInvoices(InvoiceStatus status) {
         String email = SecurityUtil.getCurrentUserEmail();
-        return invoiceRepository.findByStatusAndPurchasingSpecialist_Email(status, email)
+        return invoiceRepository
+                .findByStatusAndPurchasingSpecialist_Email(status, email)
                 .stream()
                 .map(invoiceMapper::toResponse)
                 .toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<InvoiceResponse> getInvoicesByStatus(InvoiceStatus status) {
-        return invoiceRepository.findByStatus(status)
+        return invoiceRepository
+                .findByStatus(status)
                 .stream()
                 .map(invoiceMapper::toResponse)
                 .toList();
@@ -104,41 +84,80 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public void cancelInvoice(Long id) {
-        Invoice invoice = invoiceRepository.findById(String.valueOf(id))
-                .orElseThrow(() -> new InvoiceNotFoundException(id));
+
+        Invoice invoice = findInvoiceById(String.valueOf(id));
+        validateCancellationPermission(invoice);
+
+        invoice.cancel();
+        invoiceRepository.save(invoice);
+
+        notificationService.notifyInvoiceCancelled(invoice);
+    }
+
+    private User getCurrentUser() {
+        String email = SecurityUtil.getCurrentUserEmail();
+        return userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email));
+    }
+
+    private void validateOwnership(InvoiceRequest request, User user) {
+        if (!user.matchesIdentity(request.email(), request.firstName(), request.lastName())) {
+            throw new InvoiceOwnershipException();
+        }
+    }
+
+    private void validateDuplicateBillNo(String billNo) {
+        if (invoiceRepository.existsByBillNoAndStatus(billNo, InvoiceStatus.APPROVED)) {
+            throw new DuplicateBillNoException(billNo);
+        }
+    }
+
+    private Product getProduct(String productName) {
+        return productRepository
+                .findByName(productName)
+                .orElseThrow(() -> new ProductNotFoundException(productName));
+    }
+
+    private BigDecimal calculateNewTotal(String email, BigDecimal amount) {
+        BigDecimal currentTotal =
+                invoiceRepository.sumApprovedAmountByEmail(email);
+
+        return currentTotal.add(amount);
+    }
+
+    private void decideInvoiceStatus(Invoice invoice, BigDecimal newTotalAmount) {
+        if (newTotalAmount.compareTo(approvalProperties.getMaxLimit()) > 0) {
+            invoice.reject();
+        } else {
+            invoice.approve();
+        }
+    }
+
+    private void sendNotificationIfNeeded(Invoice invoice) {
+        if (invoice.getStatus() == InvoiceStatus.REJECTED) {
+            notificationService.notifyInvoiceRejected(invoice);
+        }
+    }
+
+    private Invoice findInvoiceById(String id) {
+        return invoiceRepository
+                .findById(id)
+                .orElseThrow(() -> new InvoiceNotFoundException(Long.valueOf(id)));
+    }
+
+    private void validateCancellationPermission(Invoice invoice) {
 
         String currentUserEmail = SecurityUtil.getCurrentUserEmail();
 
-        if (!invoice.getPurchasingSpecialist().getEmail().equals(currentUserEmail)) {
+        if (!invoice.isOwnedBy(currentUserEmail)) {
             throw new InvoiceOwnershipException();
         }
 
-        if (invoice.getStatus() == InvoiceStatus.REJECTED) {
+        if (!invoice.isCancellable()) {
             throw new InvoiceCannotBeCancelledException(
-                    "Rejected invoices cannot be cancelled"
+                    "Invoice cannot be cancelled in status: " + invoice.getStatus()
             );
-        }
-
-        if (invoice.getStatus() == InvoiceStatus.CANCELLED) {
-            throw new InvoiceCannotBeCancelledException(
-                    "Invoice already cancelled"
-            );
-        }
-
-        invoice.setStatus(InvoiceStatus.CANCELLED);
-        invoiceRepository.save(invoice);
-        notificationService.notifyInvoiceCancelled(invoice);
-
-    }
-
-    private void validateInvoiceOwner(InvoiceRequest request, User user) {
-
-        if (!request.email().equals(user.getEmail())
-                || !request.firstName().equals(user.getFirstName())
-                || !request.lastName().equals(user.getLastName())) {
-
-            throw new InvoiceOwnershipException();
-
         }
     }
 }
