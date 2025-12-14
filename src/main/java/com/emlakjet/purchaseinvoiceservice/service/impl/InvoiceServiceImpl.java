@@ -9,6 +9,7 @@ import com.emlakjet.purchaseinvoiceservice.exception.ProductNotFoundException;
 import com.emlakjet.purchaseinvoiceservice.mapper.InvoiceMapper;
 import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
 import com.emlakjet.purchaseinvoiceservice.model.entity.Invoice;
+import com.emlakjet.purchaseinvoiceservice.model.entity.Product;
 import com.emlakjet.purchaseinvoiceservice.model.entity.PurchasingSpecialist;
 import com.emlakjet.purchaseinvoiceservice.repository.InvoiceRepository;
 import com.emlakjet.purchaseinvoiceservice.repository.ProductRepository;
@@ -47,11 +48,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         validateInvoiceOwner(invoiceRequest, user);
 
-        if (invoiceRepository.existsByBillNo(invoiceRequest.billNo())) {
+        if (invoiceRepository.existsByBillNoAndStatus(invoiceRequest.billNo(), InvoiceStatus.APPROVED)) {
             throw new DuplicateBillNoException(invoiceRequest.productName());
         }
 
-        productRepository.findByName(invoiceRequest.productName())
+        Product product = productRepository.findByName(invoiceRequest.productName())
                 .orElseThrow(() -> new ProductNotFoundException(invoiceRequest.productName()));
 
         BigDecimal currentTotal = invoiceRepository.sumApprovedAmountByEmail(invoiceRequest.email());
@@ -59,6 +60,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         BigDecimal newTotal = currentTotal.add(invoiceRequest.amount());
 
         Invoice invoice = invoiceMapper.toEntity(invoiceRequest);
+        invoice.setPurchasingSpecialist(user);
+        invoice.setProduct(product);
 
         if (!isAmountApproved(newTotal)) {
 
@@ -114,8 +117,12 @@ public class InvoiceServiceImpl implements InvoiceService {
             throw new AccessDeniedException("You can only cancel your own invoices");
         }
 
-        if (invoice.getStatus() == InvoiceStatus.APPROVED) {
-            throw new IllegalStateException("Approved invoices cannot be cancelled");
+        if (invoice.getStatus() == InvoiceStatus.REJECTED) {
+            throw new IllegalStateException("Rejected invoices cannot be cancelled");
+        }
+
+        if (invoice.getStatus() == InvoiceStatus.CANCELLED) {
+            throw new IllegalStateException("Already cancelled");
         }
 
         invoice.setStatus(InvoiceStatus.CANCELLED);
