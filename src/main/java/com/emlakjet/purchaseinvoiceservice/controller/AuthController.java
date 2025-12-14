@@ -2,12 +2,13 @@ package com.emlakjet.purchaseinvoiceservice.controller;
 
 import com.emlakjet.purchaseinvoiceservice.dto.request.AuthRequest;
 import com.emlakjet.purchaseinvoiceservice.dto.request.RegisterRequest;
-import com.emlakjet.purchaseinvoiceservice.dto.response.ApiResponse;
 import com.emlakjet.purchaseinvoiceservice.dto.response.AuthResponse;
+import com.emlakjet.purchaseinvoiceservice.dto.response.CommonApiResponse;
 import com.emlakjet.purchaseinvoiceservice.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,49 +29,82 @@ public class AuthController {
     private final AuthService authService;
 
     @Operation(
-            summary = "Register a new purchasing specialist",
+            summary = "Register new user",
             description = """
-                    Registers a new user with PURCHASING_SPECIALIST role.
-                    Email must be unique in the system.
-                    Password is stored in encrypted form.
+                    Registers a new user in the system with one of the following roles:
+                                        
+                    - PURCHASING_SPECIALIST
+                    - FINANCE_SPECIALIST
+                                        
+                    Rules:
+                    - Email must be unique
+                    - Password is stored in encrypted form
+                    - Role must be one of the supported roles
                     """
     )
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+    @ApiResponse(
             responseCode = "200",
-            description = "User successfully registered"
+            description = "User successfully registered",
+            content = @Content(
+                    schema = @Schema(implementation = CommonApiResponse.class)
+            )
     )
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+    @ApiResponse(
             responseCode = "400",
-            description = "Validation error or email already exists",
-            content = @Content
+            description = "Validation error or invalid role",
+            content = @Content(
+                    schema = @Schema(implementation = CommonApiResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "409",
+            description = "Email already exists",
+            content = @Content(
+                    schema = @Schema(implementation = CommonApiResponse.class)
+            )
     )
     @PostMapping("/register")
-    public ApiResponse<Void> register(@RequestBody @Valid RegisterRequest request) {
+    public CommonApiResponse<Void> register(@RequestBody @Valid RegisterRequest request) {
         authService.register(request);
-        return ApiResponse.success("User registered successfully", null);
+        return CommonApiResponse.success("User registered successfully", null);
     }
 
     @Operation(
             summary = "User login",
             description = """
                     Authenticates user credentials and returns a JWT token.
-                    The token must be used in Authorization header for secured endpoints.
+                                        
+                    JWT Token:
+                    - Contains user's email as subject
+                    - Contains user's role (PURCHASING_SPECIALIST or FINANCE_SPECIALIST)
+                                        
+                    Usage:
+                    Authorization: Bearer <JWT_TOKEN>
                     """
     )
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+    @ApiResponse(
             responseCode = "200",
             description = "Login successful",
             content = @Content(
                     schema = @Schema(implementation = AuthResponse.class)
             )
     )
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+    @ApiResponse(
+            responseCode = "400",
+            description = "Validation error (invalid request body)",
+            content = @Content(
+                    schema = @Schema(implementation = CommonApiResponse.class)
+            )
+    )
+    @ApiResponse(
             responseCode = "401",
             description = "Invalid email or password",
-            content = @Content
+            content = @Content(
+                    schema = @Schema(implementation = CommonApiResponse.class)
+            )
     )
     @PostMapping("/login")
-    public ApiResponse<AuthResponse> login(@RequestBody @Valid AuthRequest request) {
-        return ApiResponse.success("Login successful", authService.login(request));
+    public CommonApiResponse<AuthResponse> login(@RequestBody @Valid AuthRequest request) {
+        return CommonApiResponse.success("Login successful", authService.login(request));
     }
 }

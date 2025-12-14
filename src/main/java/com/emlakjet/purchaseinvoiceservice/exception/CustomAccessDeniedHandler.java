@@ -1,6 +1,6 @@
 package com.emlakjet.purchaseinvoiceservice.exception;
 
-import com.emlakjet.purchaseinvoiceservice.dto.response.ApiResponse;
+import com.emlakjet.purchaseinvoiceservice.dto.response.CommonApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +26,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
         mapper.writeValue(
                 response.getWriter(),
-                ApiResponse.error("Access denied")
+                CommonApiResponse.error("Access denied")
         );
     }
 }

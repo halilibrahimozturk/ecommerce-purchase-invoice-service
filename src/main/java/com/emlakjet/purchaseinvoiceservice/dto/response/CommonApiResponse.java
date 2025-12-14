@@ -4,21 +4,21 @@ import com.emlakjet.purchaseinvoiceservice.model.ResponseStatus;
 import lombok.Builder;
 
 @Builder
-public record ApiResponse<T>(
+public record CommonApiResponse<T>(
         ResponseStatus status,
         String message,
         T data
 ) {
-    public static <T> ApiResponse<T> success(String message, T data) {
-        return ApiResponse.<T>builder()
+    public static <T> CommonApiResponse<T> success(String message, T data) {
+        return CommonApiResponse.<T>builder()
                 .status(ResponseStatus.SUCCESS)
                 .message(message)
                 .data(data)
                 .build();
     }
 
-    public static <T> ApiResponse<T> error(String message) {
-        return ApiResponse.<T>builder()
+    public static <T> CommonApiResponse<T> error(String message) {
+        return CommonApiResponse.<T>builder()
                 .status(ResponseStatus.ERROR)
                 .message(message)
                 .data(null)
