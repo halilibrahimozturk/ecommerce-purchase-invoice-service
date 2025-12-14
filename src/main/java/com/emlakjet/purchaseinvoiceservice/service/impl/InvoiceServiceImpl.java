@@ -89,7 +89,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<InvoiceResponse> listInvoices(InvoiceStatus status) {
         String email = SecurityUtil.getCurrentUserEmail();
-        return invoiceRepository.findByStatusAndEmail(status, email)
+        return invoiceRepository.findByStatusAndPurchasingSpecialist_Email(status, email)
                 .stream()
                 .map(invoiceMapper::toResponse)
                 .toList();

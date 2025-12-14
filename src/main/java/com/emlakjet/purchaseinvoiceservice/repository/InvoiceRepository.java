@@ -21,7 +21,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, String> {
 
     List<Invoice> findByStatus(InvoiceStatus status);
 
-    List<Invoice> findByStatusAndEmail(InvoiceStatus status, String email);
+    List<Invoice> findByStatusAndPurchasingSpecialist_Email(InvoiceStatus status, String email);
 
     boolean existsByBillNo(String billNo);
 
