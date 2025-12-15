@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  # PostgreSQL Servisi
+  # PostgreSQL DB
   db:
     image: postgres:13
     container_name: purchase_invoice_db
@@ -14,7 +14,7 @@ services:
     networks:
       - purchase_invoice_network
 
-  # Spring Boot Uygulaması
+  # Spring Boot App Properties for Product Environment
   purchase-invoice-service:
     build:
       context: .
