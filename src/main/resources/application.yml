@@ -1,15 +1,30 @@
+spring:
+  application:
+    name: purchase-invoice-service
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/emlakjet}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:1234}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+
+  cache:
+    type: caffeine
+
 invoice:
   approval:
     max-limit: 200
 
 security:
   webhook-urls:
-    - http://localhost:8080/mock-webhook
-#    - http://localhost:8080/financeDepartment
-
-spring:
-  cache:
-    type: caffeine
+    - ${WEBHOOK_URL:http://localhost:8080/mock-webhook}
 
 caffeine:
   spec: maximumSize=1000,expireAfterWrite=30m
@@ -17,3 +32,8 @@ caffeine:
 logging:
   level:
     org.springframework.cache: DEBUG
+
+app:
+  jwt:
+    secret: "N7f!9sL2@xR6qP4$hT8uY3eV0zW1bC5d"
+    expiration-ms: 3600000
