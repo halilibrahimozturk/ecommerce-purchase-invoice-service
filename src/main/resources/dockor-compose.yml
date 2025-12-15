@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Servisi
+  db:
+    image: postgres:13
+    container_name: purchase_invoice_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: emlakjet
+    ports:
+      - "5432:5432"
+    networks:
+      - purchase_invoice_network
+
+  # Spring Boot Uygulaması
+  purchase-invoice-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: purchase_invoice_service
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/emlakjet
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
+      JWT_SECRET: "N7f!9sL2@xR6qP4$hT8uY3eV0zW1bC5d"
+      JWT_EXPIRATION_MS: 3600000
+    depends_on:
+      - db
+    networks:
+      - purchase_invoice_network
+
+networks:
+  purchase_invoice_network:
+    driver: bridge
