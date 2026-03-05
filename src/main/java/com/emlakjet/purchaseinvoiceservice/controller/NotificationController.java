@@ -1,7 +1,7 @@
-package com.emlakjet.purchaseinvoiceservice.controller;
+package com.ozturk.purchaseinvoiceservice.controller;
 
-import com.emlakjet.purchaseinvoiceservice.dto.response.NotificationResponse;
-import com.emlakjet.purchaseinvoiceservice.service.NotificationService;
+import com.ozturk.purchaseinvoiceservice.dto.response.NotificationResponse;
+import com.ozturk.purchaseinvoiceservice.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

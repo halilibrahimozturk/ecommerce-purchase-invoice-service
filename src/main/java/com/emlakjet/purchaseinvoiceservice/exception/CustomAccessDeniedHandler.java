@@ -1,6 +1,6 @@
-package com.emlakjet.purchaseinvoiceservice.exception;
+package com.ozturk.purchaseinvoiceservice.exception;
 
-import com.emlakjet.purchaseinvoiceservice.dto.response.CommonApiResponse;
+import com.ozturk.purchaseinvoiceservice.dto.response.CommonApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

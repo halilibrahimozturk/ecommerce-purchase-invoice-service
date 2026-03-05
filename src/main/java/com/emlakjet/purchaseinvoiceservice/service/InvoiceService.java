@@ -1,12 +1,12 @@
-package com.emlakjet.purchaseinvoiceservice.service;
+package com.ozturk.purchaseinvoiceservice.service;
 
-import com.emlakjet.purchaseinvoiceservice.dto.request.InvoiceRequest;
-import com.emlakjet.purchaseinvoiceservice.dto.response.InvoiceResponse;
-import com.emlakjet.purchaseinvoiceservice.exception.DuplicateBillNoException;
-import com.emlakjet.purchaseinvoiceservice.exception.InvoiceCannotBeCancelledException;
-import com.emlakjet.purchaseinvoiceservice.exception.InvoiceNotFoundException;
-import com.emlakjet.purchaseinvoiceservice.exception.InvoiceOwnershipException;
-import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
+import com.ozturk.purchaseinvoiceservice.dto.request.InvoiceRequest;
+import com.ozturk.purchaseinvoiceservice.dto.response.InvoiceResponse;
+import com.ozturk.purchaseinvoiceservice.exception.DuplicateBillNoException;
+import com.ozturk.purchaseinvoiceservice.exception.InvoiceCannotBeCancelledException;
+import com.ozturk.purchaseinvoiceservice.exception.InvoiceNotFoundException;
+import com.ozturk.purchaseinvoiceservice.exception.InvoiceOwnershipException;
+import com.ozturk.purchaseinvoiceservice.model.InvoiceStatus;
 
 import java.util.List;
 

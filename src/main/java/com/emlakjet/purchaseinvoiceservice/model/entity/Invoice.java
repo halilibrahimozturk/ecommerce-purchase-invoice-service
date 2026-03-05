@@ -1,7 +1,7 @@
-package com.emlakjet.purchaseinvoiceservice.model.entity;
+package com.ozturk.purchaseinvoiceservice.model.entity;
 
-import com.emlakjet.purchaseinvoiceservice.exception.InvoiceCannotBeCancelledException;
-import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
+import com.ozturk.purchaseinvoiceservice.exception.InvoiceCannotBeCancelledException;
+import com.ozturk.purchaseinvoiceservice.model.InvoiceStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

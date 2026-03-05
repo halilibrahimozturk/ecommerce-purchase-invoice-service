@@ -1,7 +1,7 @@
-package com.emlakjet.purchaseinvoiceservice.service.impl;
+package com.ozturk.purchaseinvoiceservice.service.impl;
 
-import com.emlakjet.purchaseinvoiceservice.model.entity.User;
-import com.emlakjet.purchaseinvoiceservice.repository.UserRepository;
+import com.ozturk.purchaseinvoiceservice.model.entity.User;
+import com.ozturk.purchaseinvoiceservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

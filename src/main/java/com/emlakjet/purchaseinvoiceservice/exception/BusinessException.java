@@ -1,4 +1,4 @@
-package com.emlakjet.purchaseinvoiceservice.exception;
+package com.ozturk.purchaseinvoiceservice.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

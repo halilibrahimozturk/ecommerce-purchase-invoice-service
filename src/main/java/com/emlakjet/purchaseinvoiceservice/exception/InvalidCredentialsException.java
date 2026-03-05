@@ -1,4 +1,4 @@
-package com.emlakjet.purchaseinvoiceservice.exception;
+package com.ozturk.purchaseinvoiceservice.exception;
 
 public class InvalidCredentialsException extends RuntimeException {
     public InvalidCredentialsException() {

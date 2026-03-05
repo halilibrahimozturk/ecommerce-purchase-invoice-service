@@ -1,12 +1,12 @@
-package com.emlakjet.purchaseinvoiceservice.service.impl;
+package com.ozturk.purchaseinvoiceservice.service.impl;
 
-import com.emlakjet.purchaseinvoiceservice.dto.request.AuthRequest;
-import com.emlakjet.purchaseinvoiceservice.dto.request.RegisterRequest;
-import com.emlakjet.purchaseinvoiceservice.dto.response.AuthResponse;
-import com.emlakjet.purchaseinvoiceservice.model.UserRole;
-import com.emlakjet.purchaseinvoiceservice.model.entity.User;
-import com.emlakjet.purchaseinvoiceservice.repository.UserRepository;
-import com.emlakjet.purchaseinvoiceservice.util.JwtUtil;
+import com.ozturk.purchaseinvoiceservice.dto.request.AuthRequest;
+import com.ozturk.purchaseinvoiceservice.dto.request.RegisterRequest;
+import com.ozturk.purchaseinvoiceservice.dto.response.AuthResponse;
+import com.ozturk.purchaseinvoiceservice.model.UserRole;
+import com.ozturk.purchaseinvoiceservice.model.entity.User;
+import com.ozturk.purchaseinvoiceservice.repository.UserRepository;
+import com.ozturk.purchaseinvoiceservice.util.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,4 +1,4 @@
-package com.emlakjet.purchaseinvoiceservice.exception;
+package com.ozturk.purchaseinvoiceservice.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String email) {

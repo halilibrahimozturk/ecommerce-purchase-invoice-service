@@ -1,8 +1,8 @@
-package com.emlakjet.purchaseinvoiceservice.service.impl;
+package com.ozturk.purchaseinvoiceservice.service.impl;
 
-import com.emlakjet.purchaseinvoiceservice.model.UserRole;
-import com.emlakjet.purchaseinvoiceservice.model.entity.User;
-import com.emlakjet.purchaseinvoiceservice.repository.UserRepository;
+import com.ozturk.purchaseinvoiceservice.model.UserRole;
+import com.ozturk.purchaseinvoiceservice.model.entity.User;
+import com.ozturk.purchaseinvoiceservice.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

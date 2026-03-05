@@ -1,6 +1,6 @@
-package com.emlakjet.purchaseinvoiceservice.repository;
+package com.ozturk.purchaseinvoiceservice.repository;
 
-import com.emlakjet.purchaseinvoiceservice.model.entity.Product;
+import com.ozturk.purchaseinvoiceservice.model.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

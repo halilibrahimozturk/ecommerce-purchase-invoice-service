@@ -1,4 +1,4 @@
-package com.emlakjet.purchaseinvoiceservice.dto.request;
+package com.ozturk.purchaseinvoiceservice.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

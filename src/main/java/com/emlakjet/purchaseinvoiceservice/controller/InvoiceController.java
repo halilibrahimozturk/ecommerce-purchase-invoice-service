@@ -1,10 +1,10 @@
-package com.emlakjet.purchaseinvoiceservice.controller;
+package com.ozturk.purchaseinvoiceservice.controller;
 
-import com.emlakjet.purchaseinvoiceservice.dto.request.InvoiceRequest;
-import com.emlakjet.purchaseinvoiceservice.dto.response.CommonApiResponse;
-import com.emlakjet.purchaseinvoiceservice.dto.response.InvoiceResponse;
-import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
-import com.emlakjet.purchaseinvoiceservice.service.InvoiceService;
+import com.ozturk.purchaseinvoiceservice.dto.request.InvoiceRequest;
+import com.ozturk.purchaseinvoiceservice.dto.response.CommonApiResponse;
+import com.ozturk.purchaseinvoiceservice.dto.response.InvoiceResponse;
+import com.ozturk.purchaseinvoiceservice.model.InvoiceStatus;
+import com.ozturk.purchaseinvoiceservice.service.InvoiceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

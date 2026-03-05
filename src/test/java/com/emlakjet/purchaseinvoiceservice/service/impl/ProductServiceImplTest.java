@@ -1,12 +1,12 @@
-package com.emlakjet.purchaseinvoiceservice.service.impl;
+package com.ozturk.purchaseinvoiceservice.service.impl;
 
-import com.emlakjet.purchaseinvoiceservice.dto.request.ProductRequest;
-import com.emlakjet.purchaseinvoiceservice.dto.response.ProductResponse;
-import com.emlakjet.purchaseinvoiceservice.exception.ProductAlreadyExistsException;
-import com.emlakjet.purchaseinvoiceservice.exception.ProductNotFoundException;
-import com.emlakjet.purchaseinvoiceservice.mapper.ProductMapper;
-import com.emlakjet.purchaseinvoiceservice.model.entity.Product;
-import com.emlakjet.purchaseinvoiceservice.repository.ProductRepository;
+import com.ozturk.purchaseinvoiceservice.dto.request.ProductRequest;
+import com.ozturk.purchaseinvoiceservice.dto.response.ProductResponse;
+import com.ozturk.purchaseinvoiceservice.exception.ProductAlreadyExistsException;
+import com.ozturk.purchaseinvoiceservice.exception.ProductNotFoundException;
+import com.ozturk.purchaseinvoiceservice.mapper.ProductMapper;
+import com.ozturk.purchaseinvoiceservice.model.entity.Product;
+import com.ozturk.purchaseinvoiceservice.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

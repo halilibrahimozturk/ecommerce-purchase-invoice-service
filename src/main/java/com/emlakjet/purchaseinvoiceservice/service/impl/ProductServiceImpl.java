@@ -1,13 +1,13 @@
-package com.emlakjet.purchaseinvoiceservice.service.impl;
+package com.ozturk.purchaseinvoiceservice.service.impl;
 
-import com.emlakjet.purchaseinvoiceservice.dto.request.ProductRequest;
-import com.emlakjet.purchaseinvoiceservice.dto.response.ProductResponse;
-import com.emlakjet.purchaseinvoiceservice.exception.ProductAlreadyExistsException;
-import com.emlakjet.purchaseinvoiceservice.exception.ProductNotFoundException;
-import com.emlakjet.purchaseinvoiceservice.mapper.ProductMapper;
-import com.emlakjet.purchaseinvoiceservice.model.entity.Product;
-import com.emlakjet.purchaseinvoiceservice.repository.ProductRepository;
-import com.emlakjet.purchaseinvoiceservice.service.ProductService;
+import com.ozturk.purchaseinvoiceservice.dto.request.ProductRequest;
+import com.ozturk.purchaseinvoiceservice.dto.response.ProductResponse;
+import com.ozturk.purchaseinvoiceservice.exception.ProductAlreadyExistsException;
+import com.ozturk.purchaseinvoiceservice.exception.ProductNotFoundException;
+import com.ozturk.purchaseinvoiceservice.mapper.ProductMapper;
+import com.ozturk.purchaseinvoiceservice.model.entity.Product;
+import com.ozturk.purchaseinvoiceservice.repository.ProductRepository;
+import com.ozturk.purchaseinvoiceservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;

@@ -1,4 +1,4 @@
-package com.emlakjet.purchaseinvoiceservice.config;
+package com.ozturk.purchaseinvoiceservice.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.ExternalDocumentation;

@@ -1,6 +1,6 @@
-package com.emlakjet.purchaseinvoiceservice.exception;
+package com.ozturk.purchaseinvoiceservice.exception;
 
-import com.emlakjet.purchaseinvoiceservice.dto.response.CommonApiResponse;
+import com.ozturk.purchaseinvoiceservice.dto.response.CommonApiResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

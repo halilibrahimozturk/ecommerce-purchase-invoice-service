@@ -1,11 +1,11 @@
-package com.emlakjet.purchaseinvoiceservice.service.impl;
+package com.ozturk.purchaseinvoiceservice.service.impl;
 
-import com.emlakjet.purchaseinvoiceservice.config.SecurityProperties;
-import com.emlakjet.purchaseinvoiceservice.dto.response.NotificationResponse;
-import com.emlakjet.purchaseinvoiceservice.model.entity.Invoice;
-import com.emlakjet.purchaseinvoiceservice.model.entity.Notification;
-import com.emlakjet.purchaseinvoiceservice.repository.NotificationRepository;
-import com.emlakjet.purchaseinvoiceservice.service.NotificationService;
+import com.ozturk.purchaseinvoiceservice.config.SecurityProperties;
+import com.ozturk.purchaseinvoiceservice.dto.response.NotificationResponse;
+import com.ozturk.purchaseinvoiceservice.model.entity.Invoice;
+import com.ozturk.purchaseinvoiceservice.model.entity.Notification;
+import com.ozturk.purchaseinvoiceservice.repository.NotificationRepository;
+import com.ozturk.purchaseinvoiceservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

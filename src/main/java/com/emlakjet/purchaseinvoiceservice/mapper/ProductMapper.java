@@ -1,8 +1,8 @@
-package com.emlakjet.purchaseinvoiceservice.mapper;
+package com.ozturk.purchaseinvoiceservice.mapper;
 
-import com.emlakjet.purchaseinvoiceservice.dto.request.ProductRequest;
-import com.emlakjet.purchaseinvoiceservice.dto.response.ProductResponse;
-import com.emlakjet.purchaseinvoiceservice.model.entity.Product;
+import com.ozturk.purchaseinvoiceservice.dto.request.ProductRequest;
+import com.ozturk.purchaseinvoiceservice.dto.response.ProductResponse;
+import com.ozturk.purchaseinvoiceservice.model.entity.Product;
 import org.mapstruct.Mapper;
 
 import java.util.List;

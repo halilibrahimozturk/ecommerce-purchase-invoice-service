@@ -1,6 +1,6 @@
-package com.emlakjet.purchaseinvoiceservice.dto.response;
+package com.ozturk.purchaseinvoiceservice.dto.response;
 
-import com.emlakjet.purchaseinvoiceservice.model.ResponseStatus;
+import com.ozturk.purchaseinvoiceservice.model.ResponseStatus;
 import lombok.Builder;
 
 @Builder

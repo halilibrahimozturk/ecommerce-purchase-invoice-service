@@ -1,4 +1,4 @@
-package com.emlakjet.purchaseinvoiceservice.config;
+package com.ozturk.purchaseinvoiceservice.config;
 
 import lombok.Getter;
 import lombok.Setter;

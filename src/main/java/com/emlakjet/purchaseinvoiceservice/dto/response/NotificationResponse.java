@@ -1,4 +1,4 @@
-package com.emlakjet.purchaseinvoiceservice.dto.response;
+package com.ozturk.purchaseinvoiceservice.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

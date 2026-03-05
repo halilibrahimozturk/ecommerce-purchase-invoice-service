@@ -1,4 +1,4 @@
-package com.emlakjet.purchaseinvoiceservice.util;
+package com.ozturk.purchaseinvoiceservice.util;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 

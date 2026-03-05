@@ -1,7 +1,7 @@
-package com.emlakjet.purchaseinvoiceservice.service;
+package com.ozturk.purchaseinvoiceservice.service;
 
-import com.emlakjet.purchaseinvoiceservice.dto.request.ProductRequest;
-import com.emlakjet.purchaseinvoiceservice.dto.response.ProductResponse;
+import com.ozturk.purchaseinvoiceservice.dto.request.ProductRequest;
+import com.ozturk.purchaseinvoiceservice.dto.response.ProductResponse;
 
 import java.util.List;
 

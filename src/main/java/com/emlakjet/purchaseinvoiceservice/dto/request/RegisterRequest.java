@@ -1,6 +1,6 @@
-package com.emlakjet.purchaseinvoiceservice.dto.request;
+package com.ozturk.purchaseinvoiceservice.dto.request;
 
-import com.emlakjet.purchaseinvoiceservice.model.UserRole;
+import com.ozturk.purchaseinvoiceservice.model.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

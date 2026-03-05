@@ -1,4 +1,4 @@
-package com.emlakjet.purchaseinvoiceservice.config;
+package com.ozturk.purchaseinvoiceservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

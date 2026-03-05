@@ -1,8 +1,8 @@
-package com.emlakjet.purchaseinvoiceservice.service.rule;
+package com.ozturk.purchaseinvoiceservice.service.rule;
 
-import com.emlakjet.purchaseinvoiceservice.config.InvoiceApprovalProperties;
-import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
-import com.emlakjet.purchaseinvoiceservice.model.entity.Invoice;
+import com.ozturk.purchaseinvoiceservice.config.InvoiceApprovalProperties;
+import com.ozturk.purchaseinvoiceservice.model.InvoiceStatus;
+import com.ozturk.purchaseinvoiceservice.model.entity.Invoice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

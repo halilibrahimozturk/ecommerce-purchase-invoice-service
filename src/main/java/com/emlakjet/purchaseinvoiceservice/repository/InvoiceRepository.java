@@ -1,7 +1,7 @@
-package com.emlakjet.purchaseinvoiceservice.repository;
+package com.ozturk.purchaseinvoiceservice.repository;
 
-import com.emlakjet.purchaseinvoiceservice.model.InvoiceStatus;
-import com.emlakjet.purchaseinvoiceservice.model.entity.Invoice;
+import com.ozturk.purchaseinvoiceservice.model.InvoiceStatus;
+import com.ozturk.purchaseinvoiceservice.model.entity.Invoice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

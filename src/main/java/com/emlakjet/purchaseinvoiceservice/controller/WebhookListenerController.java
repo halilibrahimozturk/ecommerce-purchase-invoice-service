@@ -1,8 +1,8 @@
-package com.emlakjet.purchaseinvoiceservice.controller;
+package com.ozturk.purchaseinvoiceservice.controller;
 
-import com.emlakjet.purchaseinvoiceservice.model.entity.Notification;
-import com.emlakjet.purchaseinvoiceservice.service.InvoiceService;
-import com.emlakjet.purchaseinvoiceservice.service.NotificationService;
+import com.ozturk.purchaseinvoiceservice.model.entity.Notification;
+import com.ozturk.purchaseinvoiceservice.service.InvoiceService;
+import com.ozturk.purchaseinvoiceservice.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

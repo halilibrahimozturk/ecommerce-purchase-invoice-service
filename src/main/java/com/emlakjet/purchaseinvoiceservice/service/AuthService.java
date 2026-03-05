@@ -1,10 +1,10 @@
-package com.emlakjet.purchaseinvoiceservice.service;
+package com.ozturk.purchaseinvoiceservice.service;
 
-import com.emlakjet.purchaseinvoiceservice.dto.request.AuthRequest;
-import com.emlakjet.purchaseinvoiceservice.dto.request.RegisterRequest;
-import com.emlakjet.purchaseinvoiceservice.dto.response.AuthResponse;
-import com.emlakjet.purchaseinvoiceservice.exception.EmailAlreadyExistsException;
-import com.emlakjet.purchaseinvoiceservice.exception.InvalidCredentialsException;
+import com.ozturk.purchaseinvoiceservice.dto.request.AuthRequest;
+import com.ozturk.purchaseinvoiceservice.dto.request.RegisterRequest;
+import com.ozturk.purchaseinvoiceservice.dto.response.AuthResponse;
+import com.ozturk.purchaseinvoiceservice.exception.EmailAlreadyExistsException;
+import com.ozturk.purchaseinvoiceservice.exception.InvalidCredentialsException;
 
 /**
  * Service for user authentication and registration.

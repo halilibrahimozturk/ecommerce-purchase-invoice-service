@@ -1,6 +1,6 @@
-package com.emlakjet.purchaseinvoiceservice.security;
+package com.ozturk.purchaseinvoiceservice.security;
 
-import com.emlakjet.purchaseinvoiceservice.util.JwtUtil;
+import com.ozturk.purchaseinvoiceservice.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

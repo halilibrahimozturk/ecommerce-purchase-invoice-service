@@ -122,7 +122,7 @@ The service follows a robust exception handling strategy:
 
 ### Local Setup
 
-1. Install PostgreSQL and create a database named `emlakjet`.
+1. Install PostgreSQL and create a database named `ozturk`.
 2. Configure database credentials and JWT secret in `application.yml`.
 3. Build the project:
 

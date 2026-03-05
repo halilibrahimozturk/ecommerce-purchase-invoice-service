@@ -1,4 +1,4 @@
-package com.emlakjet.purchaseinvoiceservice.model.entity;
+package com.ozturk.purchaseinvoiceservice.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

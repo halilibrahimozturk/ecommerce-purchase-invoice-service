@@ -1,8 +1,8 @@
-package com.emlakjet.purchaseinvoiceservice.service;
+package com.ozturk.purchaseinvoiceservice.service;
 
-import com.emlakjet.purchaseinvoiceservice.dto.response.NotificationResponse;
-import com.emlakjet.purchaseinvoiceservice.model.entity.Invoice;
-import com.emlakjet.purchaseinvoiceservice.model.entity.Notification;
+import com.ozturk.purchaseinvoiceservice.dto.response.NotificationResponse;
+import com.ozturk.purchaseinvoiceservice.model.entity.Invoice;
+import com.ozturk.purchaseinvoiceservice.model.entity.Notification;
 
 import java.util.List;
 

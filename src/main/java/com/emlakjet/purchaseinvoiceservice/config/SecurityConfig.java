@@ -1,10 +1,10 @@
-package com.emlakjet.purchaseinvoiceservice.config;
+package com.ozturk.purchaseinvoiceservice.config;
 
-import com.emlakjet.purchaseinvoiceservice.exception.CustomAccessDeniedHandler;
-import com.emlakjet.purchaseinvoiceservice.exception.CustomAuthenticationEntryPoint;
-import com.emlakjet.purchaseinvoiceservice.model.UserRole;
-import com.emlakjet.purchaseinvoiceservice.security.JwtAuthFilter;
-import com.emlakjet.purchaseinvoiceservice.service.impl.CustomUserDetailsService;
+import com.ozturk.purchaseinvoiceservice.exception.CustomAccessDeniedHandler;
+import com.ozturk.purchaseinvoiceservice.exception.CustomAuthenticationEntryPoint;
+import com.ozturk.purchaseinvoiceservice.model.UserRole;
+import com.ozturk.purchaseinvoiceservice.security.JwtAuthFilter;
+import com.ozturk.purchaseinvoiceservice.service.impl.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

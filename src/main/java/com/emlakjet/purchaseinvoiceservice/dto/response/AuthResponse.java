@@ -1,4 +1,4 @@
-package com.emlakjet.purchaseinvoiceservice.dto.response;
+package com.ozturk.purchaseinvoiceservice.dto.response;
 
 public record AuthResponse(
         String token
